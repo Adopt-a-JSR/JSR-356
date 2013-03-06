@@ -1,0 +1,16 @@
+<h1>Tic-Tac-Toe : X - 0</h1>
+
+<div id="content" ng-controller="TicTacToeController">
+
+    <p><h3>{{message}}</h3></p>
+    <div ng-show="myturn"><h3>My Turn</h3></div>
+    <div ng-hide="myturn"><h3>Other Player's Turn</h3></div>
+    <p><h3>{{symbol}}</h3></p>
+
+    <table id="board">
+        <tr class="row" ng-repeat="row in board">
+            <td class="cell" ng-repeat="cell in row" ng-click="placeSymbol($parent.$index, $index)">{{cell.content}}</td>
+        </tr>
+    </table>
+
+</div>
