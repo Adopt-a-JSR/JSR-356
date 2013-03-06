@@ -9,5 +9,6 @@ Also, tyrus-1.0-b12 depends on javax.websocket-api-1.0-b13 which is NOT the late
 
 At this moment, the latest promoted build of GlassFish (b78) is shipped with tyrus-1.0-b12 and javax.websocket-api-1.0-b13.
 Hence, in order to run the server, you can simply install GlassFish 4 b78
+http://dlc.sun.com.edgesuite.net/glassfish/4.0/promoted/glassfish-4.0-b78.zip
 
 The client is a JavaFX 2.x client, depending on the same javax.websocket-api 1.0-b13.
