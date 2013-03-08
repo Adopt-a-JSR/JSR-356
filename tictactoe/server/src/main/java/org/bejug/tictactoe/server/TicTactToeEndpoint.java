@@ -2,6 +2,8 @@ package org.bejug.tictactoe.server;
 
 import java.io.IOException;
 import java.util.logging.Logger;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -18,12 +20,19 @@ public class TicTactToeEndpoint {
     static final String GAME_PROPERTY_KEY = "Game";
     static final int MAX_IDLE_TIMEOUT = 1000;
 
+    private GameRegistry gameRegistry;
+
+    @Inject @Named
+    public TicTactToeEndpoint(GameRegistry gameRegistry) {
+        this.gameRegistry = gameRegistry;
+    }
+
     @OnOpen
     public void onOpen(final Session session) throws IOException {
         LOGGER.info("Opening Endpoint for session " + session);
         session.setMaxIdleTimeout(MAX_IDLE_TIMEOUT);
 
-        final Game lastGame = GameRegistryFactory.getInstance().getGameRegistry().getAvailableGame();
+        final Game lastGame = gameRegistry.getAvailableGame();
         session.getUserProperties().put(GAME_PROPERTY_KEY, lastGame);
         String sid = session.getId();
 
@@ -49,7 +58,7 @@ public class TicTactToeEndpoint {
         Game game = (Game) session.getUserProperties().remove(GAME_PROPERTY_KEY);
         Player opponent = game.getOpponentForSessionId(session.getId());
         opponent.getSession().getUserProperties().remove(GAME_PROPERTY_KEY);;
-        GameRegistryFactory.getInstance().getGameRegistry().gameHasFinished(game);
+        gameRegistry.gameHasFinished(game);
     }
 
     @OnMessage

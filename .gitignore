@@ -62,3 +62,6 @@ local.properties
 .buildpath
 Window size: x 
 Viewport size: x
+
+# maven
+target

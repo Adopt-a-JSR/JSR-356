@@ -27,8 +27,7 @@ public class TicTactToeEndpointTest {
 
     @Before
     public void setUp() {
-        endpoint = new TicTactToeEndpoint();
-        GameRegistryFactory.setOverride(gameRegistry);
+        endpoint = new TicTactToeEndpoint(gameRegistry);
     }
 
     @Test

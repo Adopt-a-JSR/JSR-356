@@ -1,13 +1,18 @@
 package org.bejug.tictactoe.server;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * GameRegistry implementation which keeps games in memory.
+ *
  * @author mike
  */
-public final class InMemoryGameRegistry implements GameRegistry {
+@Named
+@ApplicationScoped
+public class InMemoryGameRegistry implements GameRegistry {
     /**
      * Singleton instance.
      */
@@ -21,19 +26,24 @@ public final class InMemoryGameRegistry implements GameRegistry {
     /**
      * Constructor.
      */
-    private InMemoryGameRegistry() {
+    public InMemoryGameRegistry() {
         games = new LinkedList<Game>();
+
     }
 
     /**
-     * Get the singleton instance.
-     * @return the singleton instance
+     * Get the last game in the games list, or a new one if the list is empty.
+     * @return The last game in the list, or a new one if the list was empty.
      */
-    public static synchronized InMemoryGameRegistry getInstance() {
-        if (instance == null) {
-            instance = new InMemoryGameRegistry();
+    private Game getLastInListOrNew() {
+        Game result;
+        if (games.size() == 0) {
+            result = new Game();
+            games.add(result);
+        } else {
+            result = games.get(games.size() - 1);
         }
-        return instance;
+        return result;
     }
 
     /**
@@ -41,7 +51,7 @@ public final class InMemoryGameRegistry implements GameRegistry {
      */
     @Override
     public synchronized Game getAvailableGame() {
-        Game last = games.get(games.size() - 1);
+        Game last = getLastInListOrNew();
         if (last.isReadyToPlay()) {
             last = new Game();
             games.add(last);
@@ -53,9 +63,7 @@ public final class InMemoryGameRegistry implements GameRegistry {
      * {@inheritDoc}
      */
     @Override
-    public void gameHasFinished(final Game game) {
-        synchronized (games) {
-            games.remove(game);
-        }
+    public synchronized void gameHasFinished(final Game game) {
+        games.remove(game);
     }
 }
