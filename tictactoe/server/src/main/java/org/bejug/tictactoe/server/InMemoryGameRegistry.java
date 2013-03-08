@@ -14,9 +14,9 @@ public final class InMemoryGameRegistry implements GameRegistry {
     private static InMemoryGameRegistry instance;
 
     /**
-     * The list of games
+     * The list of games.
      */
-    private List<Game> games;
+    private final List<Game> games;
 
     /**
      * Constructor.
@@ -33,6 +33,7 @@ public final class InMemoryGameRegistry implements GameRegistry {
         if (instance == null) {
             instance = new InMemoryGameRegistry();
         }
+        return instance;
     }
 
     /**

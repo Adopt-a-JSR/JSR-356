@@ -50,15 +50,14 @@ public class Game {
         return player1 != null && player2 != null;
     }
 
-    Player getPlayerForSessionId(String sid) {
+    public Player getOpponentForSessionId(String sid) {
+
         Player result = null;
-        if (player1.getSession().getId().equals(sid)) {
-            result = player1;
-        } else if (player2.getSession().getId().equals(sid)) {
+        if (player1 != null && player1.getSession().getId().equals(sid)) {
             result = player2;
+        } else if (player2 != null && player2.getSession().getId().equals(sid)) {
+            result = player1;
         }
         return result;
     }
-	
-	
 }
