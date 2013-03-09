@@ -107,6 +107,38 @@ public class TicTactToeEndpointTest {
     }
 
     @Test
+    public void testOnCloseSessionHasNoGame() {
+        Session player1Session = Mockito.mock(Session.class);
+
+        Mockito.when(player1Session.getUserProperties()).thenReturn(userProperties);
+        Mockito.when(player1Session.getId()).thenReturn("sid1");
+        Mockito.when(userProperties.remove(TicTactToeEndpoint.GAME_PROPERTY_KEY)).thenReturn(null);
+
+        endpoint.onClose(player1Session);
+
+        Mockito.verify(userProperties).remove(TicTactToeEndpoint.GAME_PROPERTY_KEY);
+        Mockito.verifyNoMoreInteractions(gameRegistry);
+        Mockito.verifyNoMoreInteractions(userProperties);
+    }
+
+    @Test
+    public void testOnCloseNoOpponent() throws Exception {
+        Session player1Session = Mockito.mock(Session.class);
+
+        Game game = new Game();
+        game.setPlayer1(new Player("sid1", player1Session));
+
+        Mockito.when(player1Session.getUserProperties()).thenReturn(userProperties);
+        Mockito.when(player1Session.getId()).thenReturn("sid1");
+        Mockito.when(userProperties.remove(TicTactToeEndpoint.GAME_PROPERTY_KEY)).thenReturn(game);
+
+        endpoint.onClose(player1Session);
+
+        Mockito.verify(userProperties).remove(TicTactToeEndpoint.GAME_PROPERTY_KEY);
+        Mockito.verify(gameRegistry).gameHasFinished(game);
+    }
+
+    @Test
     public void testOnMessage() throws Exception {
         Session player1Session = Mockito.mock(Session.class);
         Session player2Session = Mockito.mock(Session.class);

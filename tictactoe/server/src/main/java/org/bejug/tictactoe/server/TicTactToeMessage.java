@@ -1,6 +1,7 @@
 package org.bejug.tictactoe.server;
 
 /**
+ * Tic-Tac-Toe web-socket messages which are supported.
  * @author mike
  */
 public enum TicTactToeMessage {
@@ -31,7 +32,7 @@ public enum TicTactToeMessage {
     private String message;
 
     /**
-     * Creates a message type
+     * Constructor.
      * @param message the message string that will be send for this message type
      */
     private TicTactToeMessage(final String message) {
@@ -39,7 +40,7 @@ public enum TicTactToeMessage {
     }
 
     /**
-     * Returns the message that will be send for this message type
+     * Returns the message that will be send for this message type.
      * @return the message
      */
     public String getMessage() {
