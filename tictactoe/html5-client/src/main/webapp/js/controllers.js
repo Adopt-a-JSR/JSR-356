@@ -9,10 +9,11 @@ function TicTacToeController($scope, socket) {
     $scope.active = false;
     $scope.myturn = false;
     $scope.symbol = "unknown";
+    $scope.otherSymbol = "unknown";
 
     $scope.placeSymbol = function(row, column) {
         place(row, column, $scope.symbol);
-        socket.send($scope.symbol +calculateCellNumber(row,column));
+        socket.send("pm " + calculateCellNumber(row,column));
         toggleOtherPlayersTurn();
     }
 
@@ -56,27 +57,32 @@ function TicTacToeController($scope, socket) {
     init();
 
     socket.onmessage(function(socket, result) {
-        if(result == "p1")
+        if(result == "p1") {
                 waitingForOtherPlayerToJoin();
-        if (result == "p2") {
+        } else if (result.charAt(0) == "p" && result.charAt(1) == "2") {
             $scope.symbol = "o";
+            $scope.otherSymbol = "x"
             startGame();
             toggleMyTurn();
-        }
-        if (result == "p3") {
+        } else if (result == "p3") {
             $scope.symbol = "x";
+            $scope.otherSymbol = "o"
             startGame();
             toggleOtherPlayersTurn();
-        }
-        if (result.charAt(0) == "o") {
-            var coordinates = calculateCoordinate(result.charAt(1));
-            place(coordinates.row, coordinates.column, "o");
+        } else if (result.charAt(0) == "o" && result.charAt(1) == "m") {
+            var coordinates = calculateCoordinate(result.charAt(3));
+            place(coordinates.row, coordinates.column, $scope.otherSymbol);
             toggleMyTurn();
+        } else {
+            if (console && console.log) {
+                console.log("Message received, but not evaluated", result)
+            }
         }
-        if (result.charAt(0) == "x") {
-            var coordinates = calculateCoordinate(result.charAt(1));
-            place(coordinates.row, coordinates.column, "x");
-            toggleMyTurn();
+    });
+
+    socket.onclose(function(socket, reason, code, clean) {
+        if (console && console.log) {
+            console.log("Socket closed with reason, code and clean flag", reason, code, clean);
         }
     });
 }

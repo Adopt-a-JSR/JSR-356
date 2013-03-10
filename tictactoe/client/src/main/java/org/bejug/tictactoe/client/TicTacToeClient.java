@@ -40,6 +40,7 @@ public class TicTacToeClient extends Application {
 	private int[] board = new int[9];
 	private Rectangle[] rect = new Rectangle[9];
 	private int symbol = 0;
+    private int otherSymbol = 0;
 	private final Font font = new Font(28);
 	private final Color COLOR_WIN = Color.GREEN;
 
@@ -112,14 +113,14 @@ public class TicTacToeClient extends Application {
 		info.set(txt);
 	}
 
-	public void doMove(int othersymbol, int coords) {
-		String s = (othersymbol == 1) ? "O" : "X";
+	public void doMove(int coords) {
+		String s = (otherSymbol == 1) ? "O" : "X";
 
 		Label l = new Label(s);
 		l.setFont(font);
 		tile[coords].getChildren().add(l);
 
-		board[coords] = othersymbol;
+		board[coords] = otherSymbol;
 		myTurn(true);
 		System.out.println("winner?" + checkWinner());
 	}
@@ -128,7 +129,11 @@ public class TicTacToeClient extends Application {
 		symbol = s;
 	}
 
-	public void myTurn(boolean b) {
+    public void setOtherSymbol(int s) {
+        otherSymbol = s;
+    }
+
+    public void myTurn(boolean b) {
 		myTurn = b;
 		if (b) turnInfo.set("Your turn...");
 

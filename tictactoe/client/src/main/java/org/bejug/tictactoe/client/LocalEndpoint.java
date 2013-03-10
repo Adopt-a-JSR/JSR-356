@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+
+import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfiguration;
 import javax.websocket.MessageHandler;
@@ -26,6 +28,7 @@ public class LocalEndpoint extends Endpoint implements MessageHandler.Basic<Stri
 		tictactoe.setEndpoint(this);
 	}
 
+    @Override
 	public void onMessage(final String message) {
 		Platform.runLater(new Runnable() {
 			public void run() {
@@ -34,31 +37,35 @@ public class LocalEndpoint extends Endpoint implements MessageHandler.Basic<Stri
 				if ("p1".equals(message)) {
 					tictactoe.setInfo("Waiting for a second player to join...");
 				}
-				if ("p2".equals(message)) {
+				if (message.startsWith("p2")) {
 					tictactoe.setInfo("You play 'O'");
 					tictactoe.setSymbol(1);
+                    tictactoe.setOtherSymbol(2);
 					tictactoe.myTurn(true);
 				}
 				if ("p3".equals(message)) {
 					tictactoe.setInfo("You play 'X'");
 					tictactoe.setSymbol(2);
+                    tictactoe.setOtherSymbol(1);
 				}
-				if (message.startsWith("o")){
-					int c = Integer.parseInt(message.substring(1));
-					tictactoe.doMove(1,c);
+				if (message.startsWith("om")){
+					int c = Integer.parseInt(message.substring(3));
+					tictactoe.doMove(c);
 				}
-				if (message.startsWith("x")){
-					int c = Integer.parseInt(message.substring(1));
-					tictactoe.doMove(2,c);
-				}
+
 
 			}
 		});
 
 	}
 
-	void myMove(int coords, int symbol) {
-		String move = ((symbol ==1) ? "o" : "x") + coords;
+    @Override
+    public void onClose(Session session, CloseReason closeReason) {
+        System.out.println("closed: " + closeReason);
+    }
+
+    void myMove(int coords, int symbol) {
+		String move = "pm " + coords;
 		System.out.println("send this move: "+move);
 		try {
 			session.getBasicRemote().sendText(move);
