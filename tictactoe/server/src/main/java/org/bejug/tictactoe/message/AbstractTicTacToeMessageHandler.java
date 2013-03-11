@@ -3,6 +3,10 @@ package org.bejug.tictactoe.message;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.websocket.EncodeException;
 
 /**
  * Abstract TicTacToeMessageHandler, defining a convenience method for sending text messages.
@@ -19,17 +23,25 @@ public abstract class AbstractTicTacToeMessageHandler implements TicTacToeMessag
      * @throws java.io.IOException when sending the web-socket message fails
      */
     protected void sendMessageToPlayer(final TicTacToeMessage message, final Session session, final String... extraParameters) throws IOException {
-        RemoteEndpoint.Basic basicRemote = session.getBasicRemote();
-        String fullText;
-        if (extraParameters != null && extraParameters.length > 0) {
-            StringBuilder builder = new StringBuilder(message.getMessage());
-            for (String extraParameter : extraParameters) {
-                builder.append(" ").append(extraParameter.trim());
-            }
-            fullText = builder.toString();
-        } else {
-            fullText = message.getMessage();
-        }
-        basicRemote.sendText(fullText);
+        message.setExtra(Arrays.asList(extraParameters));
+		RemoteEndpoint.Basic basicRemote = session.getBasicRemote();
+		try {
+			
+			basicRemote.sendObject(message);
+			// this is moved to the MessageEncoder
+	//        String fullText;
+	//        if (extraParameters != null && extraParameters.length > 0) {
+	//            StringBuilder builder = new StringBuilder(message.getMessage());
+	//            for (String extraParameter : extraParameters) {
+	//                builder.append(" ").append(extraParameter.trim());
+	//            }
+	//            fullText = builder.toString();
+	//        } else {
+	//            fullText = message.getMessage();
+	//        basicRemote.sendText(fullText);
+	//        basicRemote.sendText(fullText);
+		} catch (EncodeException ex) {
+			Logger.getLogger(AbstractTicTacToeMessageHandler.class.getName()).log(Level.SEVERE, null, ex);
+		}
     }
 }

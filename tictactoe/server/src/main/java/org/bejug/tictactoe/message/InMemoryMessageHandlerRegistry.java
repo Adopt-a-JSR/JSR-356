@@ -41,7 +41,7 @@ public class InMemoryMessageHandlerRegistry implements MessageHandlerRegistry {
 
     @Override
     public void handle(final Session session, final TicTacToeMessage message, final String... parameters) throws UnhandledMessageException {
-        TicTacToeMessageHandler handler = registry.get(message);
+		TicTacToeMessageHandler handler = registry.get(message);
         if (handler != null) {
             handler.handleMessage(session, message, parameters);
         } else {

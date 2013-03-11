@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import org.bejug.tictactoe.message.MessageEncoder;
 
 /**
  * A web-socket server endpoint for Tic-Tac-Toe games. This endpoint manages games through a
@@ -29,7 +30,7 @@ import java.util.logging.Logger;
  * @author johan
  * @author mike
  */
-@ServerEndpoint("/endpoint")
+@ServerEndpoint(value="/endpoint", encoders = MessageEncoder.class)
 public class TicTacToeEndpoint {
     /**
      * Name for storing a game in the session's user properties.
@@ -157,7 +158,7 @@ public class TicTacToeEndpoint {
         while (messageWitParams.hasNext()) {
             params.add(messageWitParams.next());
         }
-        TicTacToeMessage tttMessage = TicTacToeMessage.ticTacToeMessage(effectiveMessage);
+        TicTacToeMessage tttMessage = TicTacToeMessage.ticTacToeMessage(effectiveMessage, params);
         if (tttMessage == null || !tttMessage.isClientMessage()) {
             handlerRegistry.handle(session, TicTacToeMessage.INVALID_MESSAGE);
         } else {

@@ -1,5 +1,7 @@
 package org.bejug.tictactoe.message;
 
+import java.util.List;
+
 /**
  * Tic-Tac-Toe web-socket messages which are supported.
  *
@@ -51,6 +53,11 @@ public enum TicTacToeMessage {
      * The message string that will be send for this message type.
      */
     private String message;
+	
+	/**
+	 * The additional extra parameters supplied with this message
+	 */
+	private List<String> extra;
 
     /**
      * Flag indicating whether this message can be send by a client.
@@ -85,6 +92,18 @@ public enum TicTacToeMessage {
     public String getMessage() {
         return message;
     }
+	
+	/**
+	 * Returns the (optional) additional message-specific parameters 
+	 * @return the additional parameters
+	 */
+	public List<String> getExtra() {
+		return extra;
+	}
+	
+	public void setExtra (List<String> params) {
+		this.extra = params;
+	}
 
     /**
      * Return the flag indicating whether this message can be send by a client.
@@ -100,11 +119,12 @@ public enum TicTacToeMessage {
      * @param message The message to be matched with the TicTacToeMessage message attribute
      * @return the TicTacToeMessage which message attribute matches the given message parameter, or null
      */
-    public static TicTacToeMessage ticTacToeMessage(final String message) {
+    public static TicTacToeMessage ticTacToeMessage(final String message, List<String> params) {
         TicTacToeMessage result = null;
         for (TicTacToeMessage ticTacToeMessage : values()) {
             if (ticTacToeMessage.getMessage().equals(message)) {
                 result = ticTacToeMessage;
+				result.extra = params;
                 break;
             }
         }
