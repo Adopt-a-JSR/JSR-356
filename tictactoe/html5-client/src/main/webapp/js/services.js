@@ -10,6 +10,13 @@ angular.module('tic-tac-toe.services', []).factory('socket', function ($rootScop
                 });
             };
         },
+        onclose: function (callback) {
+            socket.onclose = function (closeEvent) {
+                $rootScope.$apply(function() {
+                   callback(socket, closeEvent.reason, closeEvent.code, closeEvent.wasClean);
+                });
+            }
+        },
         send: function (data) {
             socket.send(data);
         }

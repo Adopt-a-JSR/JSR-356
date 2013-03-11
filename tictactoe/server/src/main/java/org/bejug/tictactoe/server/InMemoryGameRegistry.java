@@ -66,4 +66,6 @@ public class InMemoryGameRegistry implements GameRegistry {
     public synchronized void gameHasFinished(final Game game) {
         games.remove(game);
     }
+
+
 }

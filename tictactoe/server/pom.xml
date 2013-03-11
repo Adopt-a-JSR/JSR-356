@@ -27,6 +27,18 @@
 			<version>6.0</version>
 			<scope>provided</scope>
 		</dependency>
+        <!-- Guava version 14.0 should be used, but cannot due to http://java.net/jira/browse/GLASSFISH-19714 -->
+        <!-- <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>2.0</version>
+        </dependency> -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

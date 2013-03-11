@@ -16,6 +16,7 @@
 @interface TicTacToeViewController () {
     SRWebSocket *_socket;
     NSString *_symbol;
+    NSString *_otherSymbol;
 }
 
 @property (strong, nonatomic) IBOutlet UIButton *field1Button;
@@ -65,7 +66,7 @@
 - (IBAction)fieldButtonTouched:(id)sender {
     UIButton *button = sender;
     [button setTitle:_symbol forState:UIControlStateNormal];
-    NSString *message = [NSString stringWithFormat:@"%@%d", _symbol, button.tag];
+    NSString *message = [NSString stringWithFormat:@"pm %d", button.tag];
     button.enabled = false;
     [_socket send:message];
 }
@@ -77,25 +78,23 @@
          if ([IAM_P1_WAITING isEqualToString:message]) {
              //I am player one and have to wait for P2 to arive
              self.statusLabel.text = @"Waiting for player 2...";
-         } else if ([P2_JOINED isEqualToString:message]) {
+         } else if ([message hasPrefix:P2_JOINED]) {
              //I am player one and have to wait for P2 to arive
              self.statusLabel.text = @"Player 2 joined! You play O";
              _symbol = @"o";
+             _otherSymbol = @"x";
          } else if ([IAM_P2 isEqualToString:message]) {
              self.statusLabel.text = @"You joined a game! You play X";
              _symbol = @"x";
-         } else if ([message hasPrefix:@"o"]) {
+             _otherSymbol = @"o";
+         } else if ([message hasPrefix:@"om"]) {
              //o is played by other player (well should), put this on board
-             int position = [[message substringFromIndex:1] intValue];
+             int position = [[message substringFromIndex:2] intValue];
              UIButton *button = (UIButton *) [self.view viewWithTag:position];
-             [button setTitle:@"o" forState:UIControlStateNormal];
+             [button setTitle:_otherSymbol forState:UIControlStateNormal];
              button.enabled = false;
-
-         } else if ([message hasPrefix:@"x"]) {
-             int position = [[message substringFromIndex:1] intValue];
-             UIButton *button = (UIButton *) [self.view viewWithTag:position];
-             [button setTitle:@"x" forState:UIControlStateNormal];
-             button.enabled = false;
+         } else {
+             NSLog(@"Receive message %@, but did nothing with it", message);
          }
      }
      
